@@ -24,9 +24,8 @@ return {
       ensure_installed = {
         "lua_ls",
         "rust_analyzer",
-        "ruff_lsp",        -- Python linter
-        "pyright",         -- Python type checking
-        -- Add other language servers you need
+        "ruff",        
+        "pyright",    
       },
       handlers = {
         function(server_name) -- default handler
@@ -65,12 +64,11 @@ return {
         end,
         
         -- Python configuration with Ruff
-        ["ruff_lsp"] = function()
-          require("lspconfig").ruff_lsp.setup {
+        ["ruff"] = function()
+          require("lspconfig").ruff.setup {
             capabilities = capabilities,
             init_options = {
               settings = {
-                -- Ruff settings
                 lint = {
                   run = "onSave",
                 },
