@@ -19,7 +19,6 @@ autocmd('TextYankPost', {
     end,
 })
 
-
 autocmd('LspAttach', {
     group = GrooggGroup,
     callback = function(e)
