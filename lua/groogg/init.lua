@@ -1,8 +1,8 @@
 vim.g.mapleader = " "
 
 require("groogg.lazy_init")
-require("groogg.remap")
 require("groogg.set")
+require("groogg.remap")
 
 local augroup = vim.api.nvim_create_augroup
 local GrooggGroup = augroup('groogg', {})
@@ -25,13 +25,35 @@ autocmd('LspAttach', {
         vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, { buffer = e.buf, desc = "Go to definition" })
         vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, { buffer = e.buf, desc = "Show hover information" })
         vim.keymap.set("n", "<leader>ln", function() vim.lsp.buf.rename() end, { buffer = e.buf, desc = "Rename symbol" })
-        vim.keymap.set("n", "<leader>lw", function() vim.lsp.buf.workspace_symbol() end, { buffer = e.buf, desc = "Search workspace symbols" })
-        vim.keymap.set("n", "<leader>ld", function() vim.diagnostic.open_float() end, { buffer = e.buf, desc = "Show diagnostics in float" })
-        vim.keymap.set("n", "<leader>la", function() vim.lsp.buf.code_action() end, { buffer = e.buf, desc = "Show code actions" })
-        vim.keymap.set("n", "<leader>lr", function() vim.lsp.buf.references() end, { buffer = e.buf, desc = "Find references" })
-        vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, { buffer = e.buf, desc = "Show signature help" })
-        vim.keymap.set("n", "g [", function() vim.diagnostic.goto_next() end, { buffer = e.buf, desc = "Go to next diagnostic" })
-        vim.keymap.set("n", "g ]", function() vim.diagnostic.goto_prev() end, { buffer = e.buf, desc = "Go to previous diagnostic" })
-        
+        vim.keymap.set("n", "<leader>lw", function() vim.lsp.buf.workspace_symbol() end,
+            { buffer = e.buf, desc = "Search workspace symbols" })
+        vim.keymap.set("n", "<leader>ld", function() vim.diagnostic.open_float() end,
+            { buffer = e.buf, desc = "Show diagnostics in float" })
+        vim.keymap.set("n", "<leader>la", function() vim.lsp.buf.code_action() end,
+            { buffer = e.buf, desc = "Show code actions" })
+        vim.keymap.set("n", "<leader>lr", function() vim.lsp.buf.references() end,
+            { buffer = e.buf, desc = "Find references" })
+        vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end,
+            { buffer = e.buf, desc = "Show signature help" })
+        vim.keymap.set("n", "g [", function() vim.diagnostic.goto_next() end,
+            { buffer = e.buf, desc = "Go to next diagnostic" })
+        vim.keymap.set("n", "g ]", function() vim.diagnostic.goto_prev() end,
+            { buffer = e.buf, desc = "Go to previous diagnostic" })
     end
+})
+
+-- Defer things from Ruff to the LSP
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client == nil then
+            return
+        end
+        if client.name == 'ruff' then
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+        end
+    end,
+    desc = 'LSP: Disable hover capability from Ruff',
 })
