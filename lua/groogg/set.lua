@@ -1,5 +1,5 @@
-vim.cmd.colorscheme("tokyonight")
- 
+vim.cmd.colorscheme("rose-pine")
+
 vim.opt.clipboard = 'unnamedplus'
 
 vim.opt.nu = true
@@ -14,7 +14,7 @@ vim.opt.expandtab = true
 vim.opt.scrolloff = 8
 
 vim.opt.wrap = false
- 
+
 vim.opt.incsearch = true
 
 vim.opt.termguicolors = true

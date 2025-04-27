@@ -57,3 +57,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
     desc = 'LSP: Disable hover capability from Ruff',
 })
+
+-- Dotenv custom script
+local dotenv = require("groogg.dotenv")
+
+-- Load .env from the current working directory when Neovim starts
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        local cwd = vim.fn.getcwd()
+        local env_file = cwd .. "/.env"
+        dotenv.eval(env_file, false) -- false means don't overwrite existing env vars
+    end,
+    desc = "Load .env file from current working directory",
+})
+
+vim.api.nvim_create_user_command("ReloadEnv", function()
+    local cwd = vim.fn.getcwd()
+    local env_file = cwd .. "/.env"
+    dotenv.eval(env_file, true) -- true means overwrite existing env vars
+    print("Reloaded environment variables from " .. env_file)
+end, { desc = "Reload environment variables from .env file" })
