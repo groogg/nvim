@@ -81,6 +81,7 @@ return {
                 end,
 
                 ["pyright"] = function()
+                    local venv_path = vim.fn.getcwd() .. "/.venv/bin/python"
                     require("lspconfig").pyright.setup {
                         capabilities = capabilities,
                         settings = {
@@ -89,10 +90,12 @@ return {
                                 disableOrganizeImports = true,
                             },
                             python = {
+                                pythonPath = venv_path,
                                 analysis = {
-                                    -- Ignore all files for analysis to exclusively use Ruff for linting
-                                    ignore = { '*' }
-                                },
+                                    autoSearchPaths = true,
+                                    autoImportCompletions = true,
+                                    diagnosticMode = "workspace",
+                                    useLibraryCodeForTypes = true, },
                             },
                         }
                     }
@@ -107,10 +110,14 @@ return {
 
         cmp.setup({
             mapping = cmp.mapping.preset.insert({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
+                ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
+                ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
+                ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Enter to confirm
+                ['<C-Space>'] = cmp.mapping.complete(),
+                --     ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+                --     ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+                --     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+                --     ["<C-Space>"] = cmp.mapping.complete(),
             }),
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
